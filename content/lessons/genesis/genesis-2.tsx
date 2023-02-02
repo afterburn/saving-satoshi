@@ -66,7 +66,7 @@ export default function Genesis2() {
         <Text className="text-lg">{`Use the following command to decode Satoshi's secret HEX message
             into ASCII, a more human readable format:`}</Text>
 
-        <CodeExample code={'echo scriptSigHex | xxd -r -p'} language="shell" />
+        <CodeExample code={'echo <scriptSigHex> | xxd -r -p'} language="shell" />
 
         <Tips>
           <Tip title="What was the scriptSigHex value again?">
