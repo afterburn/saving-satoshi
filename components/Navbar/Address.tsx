@@ -35,6 +35,8 @@ export default function Address() {
           <>
             {chapter && (
               <p className="px-0.5 text-lg leading-none text-white/50">
+                {t('shared.chapter')} {chapter.position + 1} -{' '}
+                {t(chapter.title)}
                 <span>
                   {t('navbar.chapter')} {chapter.position + 1}
                 </span>
