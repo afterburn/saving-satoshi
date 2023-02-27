@@ -1,7 +1,8 @@
 import { useTranslations } from 'hooks'
 import { Introduction, Text } from 'ui'
 
-export default function ReapingRewards({ lang }) {
+export default function ReapingRewards() {
+  const lang = useLang()
   const t = useTranslations(lang)
 
   return (

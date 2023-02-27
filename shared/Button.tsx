@@ -1,3 +1,5 @@
+import { i18n } from 'config/i18n'
+import { useLang } from 'hooks'
 import Link from 'next/link'
 
 export default function Button({
@@ -25,6 +27,7 @@ export default function Button({
   full?: boolean
   round?: boolean
 }) {
+  const lang = useLang()
   const isLink = href !== undefined
   let className = `inline-block justify-center px-12 text-center font-nunito font-bold transition duration-150 ease-in-out ${
     full ? 'w-full' : 'md:w-auto'
@@ -98,7 +101,7 @@ export default function Button({
     // Render as link
     return (
       <Link
-        href={href}
+        href={`${lang === i18n.defaultLocale ? '' : lang}` + href}
         className={className}
         title={title}
         rel={external ? 'noreferrer nofollow' : null}

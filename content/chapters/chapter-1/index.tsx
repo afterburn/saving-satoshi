@@ -1,7 +1,8 @@
 import { Chapter, Text } from 'ui'
-import { useTranslations } from 'hooks'
+import { useTranslations, useLang } from 'hooks'
 
-export default function Chapter1({ lang }) {
+export default function Chapter1() {
+  const lang = useLang()
   const t = useTranslations(lang)
 
   return (

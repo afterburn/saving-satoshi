@@ -1,9 +1,10 @@
 'use client'
 
-import { useTranslations } from 'hooks'
+import { useLang, useTranslations } from 'hooks'
 import { Button, LessonInfo, Title, Text, InputChallenge } from 'ui'
 
-export default function Genesis1({ lang }) {
+export default function Genesis1() {
+  const lang = useLang()
   const t = useTranslations(lang)
   return (
     <InputChallenge

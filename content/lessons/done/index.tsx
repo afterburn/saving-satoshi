@@ -1,6 +1,6 @@
 import { ChapterEnd } from 'ui'
 
-export default function Done({ lang }) {
+export default function Done() {
   return (
     <ChapterEnd
       {...metadata}

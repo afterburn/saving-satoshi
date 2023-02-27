@@ -1,8 +1,9 @@
 'use client'
-import { useTranslations } from 'hooks'
+import { useLang, useTranslations } from 'hooks'
 import { LessonInfo, CodeExample, Text, Title, TerminalChallenge } from 'ui'
 
-export default function Transacting3({ lang }) {
+export default function Transacting3() {
+  const lang = useLang()
   const t = useTranslations(lang)
   return (
     <TerminalChallenge

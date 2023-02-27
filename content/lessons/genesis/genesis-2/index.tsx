@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslations } from 'hooks'
+import { useLang, useTranslations } from 'hooks'
 import {
   CopyButton,
   CodeExample,
@@ -12,9 +12,9 @@ import {
   TerminalChallenge,
 } from 'ui'
 
-export default function Genesis2({ lang }) {
+export default function Genesis2() {
+  const lang = useLang()
   const t = useTranslations(lang)
-
   return (
     <TerminalChallenge
       expectedInput={{

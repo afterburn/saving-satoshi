@@ -2,6 +2,7 @@
 
 import { Button } from 'shared'
 import { useLang, useTranslations } from 'hooks'
+import { i18n } from 'config/i18n'
 
 export default function Hero() {
   const lang = useLang()

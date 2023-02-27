@@ -9,6 +9,9 @@ export default function Address() {
 
   const pathName = usePathname()
   const pathData = pathName.split('/').filter((p) => p)
+  if (pathData[0] === 'chapters') {
+    pathData.unshift(lang)
+  }
   const isLessonRoute = pathData.length === 4
 
   const lessonId = isLessonRoute ? pathData.pop() : undefined
