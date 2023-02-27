@@ -75,8 +75,8 @@ export function t(key: string, lang: string) {
   }
 
   if (!translation) {
-    console.log(`No translation for {${lang}.${key}}`)
     let fallbackTranslation = get(translations, `en.${key}`)
+    console.log(`No translation for {${lang}.${key}}`)
     return fallbackTranslation
   }
 
