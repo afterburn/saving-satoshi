@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <div className="bg-back">
       <div className="flex flex-col items-center justify-center px-6 py-2 text-white sm:flex-row">
-        <p className="p-1">{t('footer.paragraph_one')}</p>
+        <p className="break-keep p-1">{t('footer.paragraph_one')}</p>
         <a
           href={siteConfig.links.github}
           target="_blank"

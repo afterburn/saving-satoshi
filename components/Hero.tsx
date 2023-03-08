@@ -20,10 +20,10 @@ export default function Hero() {
         className="-z-20 h-full w-full object-cover"
       />
       <div className="flex w-screen flex-col justify-center bg-gradient-to-b from-transparent via-[#00000040] to-[#00000080] px-5 pt-5 font-cbrush text-white md:p-10">
-        <h1 className="-mx-3 text-center text-6xl sm:text-7xl lg:text-8xl">
+        <h1 className="-mx-3 break-keep text-center text-6xl sm:text-7xl lg:text-8xl">
           {t('hero.title')}
         </h1>
-        <p className="px-8 pt-2 text-center text-2xl sm:text-3xl md:pt-5 lg:text-4xl">
+        <p className="break-keep px-8 pt-2 text-center text-2xl sm:text-3xl md:pt-5 lg:text-4xl">
           {t('hero.description')}
         </p>
         <div className="grid grid-cols-1 justify-center pt-5 pb-2 sm:pb-8 md:grid-cols-2 md:space-x-5 md:pt-8">
