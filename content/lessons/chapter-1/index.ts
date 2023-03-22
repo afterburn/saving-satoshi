@@ -7,7 +7,8 @@ import * as Genesis4 from './genesis-4'
 import * as Transacting1 from './transacting-1'
 import * as Transacting2 from './transacting-2'
 import * as Transacting3 from './transacting-3'
-import * as Outro1 from './outro-1'
+import * as Transacting4 from './transacting-4'
+import Transacting5, * as Outro1 from './outro-1'
 import * as Outro2 from './outro-2'
 
 const Chapter1 = {
@@ -20,6 +21,7 @@ const Chapter1 = {
   'transacting-1': Transacting1,
   'transacting-2': Transacting2,
   'transacting-3': Transacting3,
+  'transacting-4': Transacting4,
   'outro-1': Outro1,
   'outro-2': Outro2,
 }
