@@ -60,29 +60,30 @@ export default function Terminal({ success, lines, onChange }) {
     }
   }
 
-  const terminalRef = useRef(null)
-  const inputRef = useRef(null)
+  const terminalRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
 
   if (success === 'true' && focus) {
-    inputRef.current.blur()
+    const input = inputRef.current
+    input?.blur()
     setFocus(false)
   }
 
   const autoFocus = () => {
-    inputRef.current.focus()
+    const input = inputRef.current
+    input?.focus()
   }
 
   const performScrolldown = useRef(false)
   useEffect(() => {
     if (performScrolldown.current) {
-      setTimeout(
-        () =>
-          terminalRef?.current?.scrollIntoView({
-            behavior: 'auto',
-            block: 'nearest',
-          }),
-        500
-      )
+      setTimeout(() => {
+        const input = terminalRef.current
+        input?.scrollIntoView({
+          behavior: 'auto',
+          block: 'nearest',
+        })
+      }, 500)
     }
     performScrolldown.current = true
   }, [lines])
@@ -90,7 +91,7 @@ export default function Terminal({ success, lines, onChange }) {
   return (
     <div
       className={clsx(
-        'flex grow flex-col border-white/25 font-space-mono text-white md:basis-1/3 md:border-l',
+        'flex max-w-full grow flex-col border-white/25 font-space-mono text-white md:max-w-[50%] md:basis-1/3 md:border-l',
         {
           'hidden md:flex': !isActive,
           flex: isActive,
@@ -136,7 +137,7 @@ export default function Terminal({ success, lines, onChange }) {
             </div>
           </div>
         </div>
-        <StatusBar input={success} expected="true" />
+        <StatusBar success={success} />
       </div>
     </div>
   )

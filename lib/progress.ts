@@ -1,4 +1,4 @@
-import { chapters, lessons } from 'content'
+import { lessons } from 'content'
 
 export const keys = [
   'CH1INT1',
@@ -11,9 +11,16 @@ export const keys = [
   'CH1TRA2',
   'CH1TRA3',
   'CH1OUT1',
+  'CH1OUT2',
 
   'CH2INT1',
   'CH2INT2',
+  'CH2HSH1',
+  'CH2HSH2',
+  'CH2HSH3',
+  'CH2HSH4',
+  'CH2HSH5',
+  'CH2HSH6',
   'CH2SCR1',
   'CH2SCR2',
 ]
@@ -29,9 +36,16 @@ const keysMeta = {
   CH1TRA2: { path: '/chapters/chapter-1/transacting-2' },
   CH1TRA3: { path: '/chapters/chapter-1/transacting-3' },
   CH1OUT1: { path: '/chapters/chapter-1/outro-1' },
+  CH1OUT2: { path: '/chapters/chapter-1/outro-2' },
 
   CH2INT1: { path: '/chapters/chapter-2/intro-1' },
   CH2INT2: { path: '/chapters/chapter-2/intro-2' },
+  CH2HSH1: { path: '/chapters/chapter-2/hashing-1' },
+  CH2HSH2: { path: '/chapters/chapter-2/hashing-2' },
+  CH2HSH3: { path: '/chapters/chapter-2/hashing-3' },
+  CH2HSH4: { path: '/chapters/chapter-2/hashing-4' },
+  CH2HSH5: { path: '/chapters/chapter-2/hashing-5' },
+  CH2HSH6: { path: '/chapters/chapter-2/hashing-6' },
   CH2SCR1: { path: '/chapters/chapter-2/scripting-1' },
   CH2SCR2: { path: '/chapters/chapter-2/scripting-2' },
 }
@@ -59,7 +73,16 @@ export const isLessonCompleted = (
   }
 
   const ida = keys.indexOf(userProgressKey)
-  const idb = keys.indexOf(lessonKey)
+  const challengeCode = lessonKey.slice(-4, -1)
+
+  let idb
+
+  keys.slice().forEach((element, index) => {
+    if (element.includes(challengeCode)) {
+      idb = index
+      return
+    }
+  })
 
   return ida > idb
 }

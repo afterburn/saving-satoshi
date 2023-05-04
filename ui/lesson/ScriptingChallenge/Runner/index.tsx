@@ -9,7 +9,8 @@ import Icon from 'shared/Icon'
 import Terminal from './Terminal'
 import compilers from '../compilers'
 import Hasher, { HasherState } from './Hasher'
-import { EditorConfig } from 'types'
+import { EditorConfig, LessonView } from 'types'
+import { useLessonContext, StatusBar } from 'ui'
 
 let worker
 const defaultTerminalMessage = 'Saving Satoshi Runner v0.0.1'
@@ -24,9 +25,10 @@ export default function Runner({
   onReady,
   lang,
   successMessage,
+  setErrors,
 }: {
   language: string
-  code: string
+  code?: string
   config: EditorConfig
   program: string
   errors: string[]
@@ -34,17 +36,31 @@ export default function Runner({
   onReady?: () => void
   lang: string
   successMessage: string
+  setErrors: (errors: string[]) => void
 }) {
   const t = useTranslations(lang)
+  const { activeView, setActiveView } = useLessonContext()
+
   const outputRef = useRef()
+
   const [loading, setLoading] = useState<boolean>(true)
   const [isRunning, setIsRunning] = useState<boolean>(false)
   const [result, setResult] = useState<any | undefined>(undefined)
+  const [success, setSuccess] = useState<boolean | null>(null)
+  const isActive = activeView !== LessonView.Info
+  const [hasherState, setHasherState] = useState<HasherState>(
+    HasherState.Waiting
+  )
 
   const handleRun = async () => {
-    const outputEl = outputRef.current as HTMLElement
+    setIsRunning(true)
+    setErrors([])
+    setHasherState(HasherState.Running)
+    setActiveView(LessonView.Execute)
     setIsRunning(true)
 
+    // const output = outputRef.current
+    // const outputEl = output as HTMLElement
     // outputEl.innerHTML = `<div class="text-sm text-white font-mono">${defaultTerminalMessage}</div>`
 
     const iframe = document.createElement('iframe')
@@ -55,12 +71,6 @@ export default function Runner({
     function destroyIframe() {
       window.removeEventListener('message', handleMessage)
       document.body.removeChild(iframe)
-    }
-
-    if (errors.length > 0) {
-      // outputEl.innerHTML += `<div class="text-sm text-red-500 font-mono">Did not compile, your code has errors</div>`
-      setIsRunning(false)
-      return destroyIframe()
     }
 
     function print(message, config = { color: '#FFFFFF' }) {
@@ -80,16 +90,23 @@ export default function Runner({
           }
           case 'result': {
             setResult(payload)
+
+            if (payload.error) {
+              setErrors([payload.error])
+              setHasherState(HasherState.Error)
+              return
+            }
             break
           }
           case 'error': {
-            print(payload, { color: '#FF0000' })
+            setErrors([payload])
             setIsRunning(false)
+            destroyIframe()
             break
           }
           case 'validate': {
-            const success = await onValidate(payload)
-            if (success) {
+            const result = await onValidate(payload)
+            if (result) {
               print('You found a hash!', { color: '#00FF00' })
             } else {
               print('Your script does not work, please try again.', {
@@ -97,12 +114,17 @@ export default function Runner({
               })
             }
 
+            if (result) {
+              setHasherState(HasherState.Success)
+              setSuccess(true)
+            }
+
             if (isRequest) {
               if (language === 'javascript') {
-                iframe.contentWindow.postMessage(
+                iframe.contentWindow?.postMessage(
                   JSON.stringify({
                     action: 'result',
-                    payload: success,
+                    payload: result,
                     requestId,
                   })
                 )
@@ -110,7 +132,7 @@ export default function Runner({
                 worker.postMessage(
                   JSON.stringify({
                     action: 'result',
-                    payload: success,
+                    payload: result,
                     requestId,
                   })
                 )
@@ -139,9 +161,11 @@ export default function Runner({
     switch (language) {
       case 'javascript': {
         const doc = iframe.contentDocument
-        doc.open()
-        doc.write(compiledCode)
-        doc.close()
+        if (doc) {
+          doc.open()
+          doc.write(compiledCode)
+          doc.close()
+        }
         break
       }
       case 'python': {
@@ -157,18 +181,6 @@ export default function Runner({
         break
       }
     }
-  }
-
-  const getHasherState = () => {
-    if (!isRunning && result && result.startsWith('00000')) {
-      return HasherState.Success
-    }
-
-    if (!isRunning && !result) {
-      return HasherState.Waiting
-    }
-
-    return HasherState.Running
   }
 
   useEffect(() => {
@@ -194,12 +206,24 @@ export default function Runner({
     }
   }, [])
 
+  useEffect(() => {
+    setHasherState(HasherState.Waiting)
+  }, [code])
+
   return (
     <>
       <Script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js" />
 
       {loading && (
-        <div className="h-60 overflow-y-auto border-t border-white border-opacity-30 bg-[#253547] p-4">
+        <div
+          className={clsx(
+            'h-60 overflow-y-auto border-t border-white border-opacity-30 p-4',
+            {
+              'hidden md:flex': !isActive,
+              flex: isActive,
+            }
+          )}
+        >
           <Loader className="h-10 w-10 text-white" />
         </div>
       )}
@@ -213,14 +237,23 @@ export default function Runner({
           lang={lang}
           language={language}
           config={config}
-          state={getHasherState()}
+          state={hasherState}
           successMessage={successMessage}
-          errorMessage="hasher_error_message"
-          value={result}
+          errors={errors}
+          value={result?.value}
         />
       )}
 
-      <div className="flex h-12 w-full items-center border-t border-white border-opacity-30 bg-[#253547]">
+      <div
+        className={clsx(
+          'flex h-16 w-full items-start border-t border-white border-opacity-30',
+          {
+            'hidden md:flex': !isActive && hasherState !== HasherState.Success,
+            hidden: hasherState === HasherState.Success || loading,
+            flex: isActive,
+          }
+        )}
+      >
         {!isRunning && (
           <button
             disabled={loading}
@@ -254,6 +287,9 @@ export default function Runner({
           </button>
         )}
       </div>
+      {hasherState === HasherState.Success && (
+        <StatusBar className="max-h-40 grow" success={success} />
+      )}
     </>
   )
 }
