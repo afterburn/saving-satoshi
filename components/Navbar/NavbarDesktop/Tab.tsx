@@ -5,14 +5,13 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { Tooltip } from 'ui'
-import CheckIcon from 'public/assets/icons/check.svg'
-import LockIcon from 'public/assets/icons/lock.svg'
-
+import Icon from 'shared/Icon'
 import { useLang, useLocalizedRoutes, useTranslations } from 'hooks'
 import { lessons, chapters } from 'content'
 import { getLessonKey } from 'lib/progress'
 import { useProgressContext } from 'providers/ProgressProvider'
 import useLessonStatus from 'hooks/useLessonStatus'
+import { metadata } from 'content/chapters/chapter-1'
 
 export default function Tab({
   index,
@@ -33,20 +32,43 @@ export default function Tab({
   const routes = useLocalizedRoutes()
   const lang = useLang()
   const t = useTranslations(lang)
-  const pathName = usePathname()
+  const pathName = usePathname() || ''
 
   const pathData = pathName.split('/').filter((p) => p)
   const isRouteLesson = pathData.length === 4
 
   const { progress } = useProgressContext()
-  const { isUnlocked, isCompleted } = useLessonStatus(
+  const { isUnlocked } = useLessonStatus(
+    progress,
+    getLessonKey(
+      slug,
+      challenge.lessonId === chapters[slug].metadata.lessons[0]
+        ? 'intro-1'
+        : challenge.lessonId
+    )
+  )
+  const { isCompleted } = useLessonStatus(
     progress,
     getLessonKey(slug, challenge.lessonId)
   )
 
-  const challengeId = isRouteLesson ? pathData.pop().split('-')[0] : undefined
+  const pnLessonId = pathData.pop()
+  if (!pnLessonId) {
+    return null
+  }
+
+  const challengeId = isRouteLesson
+    ? pnLessonId
+        .split('-')[0]
+        .replace('intro', chapters[slug].metadata.challenges[0].split('-')[0])
+    : undefined
   const isActive = challenge.lessonId.split('-')[0] === challengeId
   const isLast = index === count - 1
+  const lessonHref =
+    challenge.lessonId === chapters[slug].metadata.challenges[0]
+      ? chapters[slug].metadata.intros[0]
+      : challenge.lessonId
+  const href = `${routes.chaptersUrl}/${slug}/${lessonHref}`
 
   return (
     <Tooltip
@@ -64,7 +86,7 @@ export default function Tab({
       }
     >
       <Link
-        href={`${routes.chaptersUrl}/${slug}/${challenge.lessonId}`}
+        href={href}
         title={t(challenge.title)}
         className={clsx(
           'relative flex h-full items-center justify-center border-l border-white/25 px-7 text-center text-lg transition duration-100 ease-in-out',
@@ -74,16 +96,22 @@ export default function Tab({
               isUnlocked && !isActive,
             'bg-black/25 text-opacity-100': isActive,
             'border-r': isLast,
-            'pointer-events-none': isUnlocked,
+            'pointer-events-none': !isUnlocked,
           }
         )}
       >
         {index + 1}
         {!isUnlocked && (
-          <LockIcon className="absolute right-[10px] top-[10px] opacity-50" />
+          <Icon
+            icon="lock"
+            className="absolute right-[10px] top-[10px] opacity-50"
+          />
         )}
         {isCompleted && (
-          <CheckIcon className="absolute right-[5px] top-[5px] h-[20px] w-[20px]" />
+          <Icon
+            icon="check"
+            className="absolute right-[5px] top-[5px] h-[20px] w-[20px]"
+          />
         )}
       </Link>
     </Tooltip>

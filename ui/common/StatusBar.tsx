@@ -1,9 +1,9 @@
 import clsx from 'clsx'
 import { Button } from 'shared'
-import CheckIcon from 'public/assets/icons/check.svg'
 import { LessonView } from 'types'
 import { useLessonContext } from 'ui'
 import { useLang, useSaveAndProceed, useTranslations } from 'hooks'
+import Icon from 'shared/Icon'
 
 export enum Status {
   Begin,
@@ -13,40 +13,42 @@ export enum Status {
 }
 
 export default function StatusBar({
-  input,
-  expected,
+  success,
   beginMessage,
   successMessage,
   inProgressMessage,
   errorMessage,
   full,
   hints,
+  alwaysShow,
+  className,
 }: {
-  input: string
-  expected: string
+  success: boolean | null
   beginMessage?: string
   successMessage?: string
   inProgressMessage?: string
   errorMessage?: string
   full?: boolean
-  hints?: boolean
+  hints?: boolean | null
+  alwaysShow?: boolean
+  className?: string
 }) {
   const lang = useLang()
   const t = useTranslations(lang)
   const { activeView } = useLessonContext()
-  const isActive = activeView === LessonView.Code
+  const isActive = activeView !== LessonView.Info
   const saveAndProceed = useSaveAndProceed()
 
   const getStatus = () => {
-    if (!input) {
+    if (success === null) {
       return Status.Begin
     }
 
-    if (input === expected) {
+    if (success === true) {
       return Status.Success
     }
 
-    if (hints && (!input || expected.startsWith(input))) {
+    if (hints && success === false) {
       return Status.InProgress
     }
 
@@ -61,7 +63,7 @@ export default function StatusBar({
         return (
           successMessage || (
             <span className="flex">
-              <CheckIcon className="mr-2 h-8 w-8" />{' '}
+              <Icon icon="check" className="mr-2 h-8 w-8" />{' '}
               {t('status_bar.success_message')}
             </span>
           )
@@ -80,18 +82,20 @@ export default function StatusBar({
   return (
     <div
       className={clsx(
+        className,
         'border-t border-white/25 max-md:bottom-0 max-md:px-4 max-md:py-8',
         {
           'w-screen': full,
           'w-full': !full,
-          'bg-green/25': getStatus() === Status.Success,
+          'bg-green/15': getStatus() === Status.Success,
           'bg-black/20': getStatus() !== Status.Success,
-          block: getStatus() === Status.Success || isActive,
-          'hidden md:block': getStatus() !== Status.Success && !isActive,
+          block: getStatus() === Status.Success && isActive,
+          'hidden md:block':
+            getStatus() !== Status.Success && !isActive && !alwaysShow,
         }
       )}
     >
-      <div className="flex flex-col items-stretch justify-between max-md:gap-4 md:flex-row">
+      <div className="flex h-full flex-col items-stretch justify-between max-md:gap-4 md:flex-row">
         <div className="flex w-full items-center align-middle transition duration-150 ease-in-out md:px-5">
           <p
             className={clsx(
@@ -109,7 +113,7 @@ export default function StatusBar({
         <Button
           onClick={saveAndProceed}
           disabled={getStatus() !== Status.Success}
-          classes="md:text-2xl md:py-4"
+          classes="md:text-2xl h-full"
         >
           {t('status_bar.next')}
         </Button>

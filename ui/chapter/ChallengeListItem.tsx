@@ -1,10 +1,8 @@
 import clsx from 'clsx'
 import Link from 'next/link'
-import { lessons } from 'content'
+import { lessons, chapters } from 'content'
 
-import CheckIcon from 'public/assets/icons/check.svg'
-import LockIcon from 'public/assets/icons/lock.svg'
-
+import Icon from 'shared/Icon'
 import { useLang, useLocalizedRoutes, useTranslations } from 'hooks'
 import useLessonStatus from 'hooks/useLessonStatus'
 import { useProgressContext } from 'providers/ProgressProvider'
@@ -20,11 +18,21 @@ export default function ChallengeItem({
   const t = useTranslations(lang)
   const { progress } = useProgressContext()
 
-  const lessonMeta = lessons[chapterId][lessonId].metadata
-  const { isUnlocked, isCompleted } = useLessonStatus(progress, lessonMeta.key)
+  const lessonMetaUnlocked =
+    lessonId === chapters[chapterId].metadata['challenges'][0]
+      ? lessons[chapterId]['intro-1'].metadata
+      : lessons[chapterId][lessonId].metadata
 
-  const href = `${routes.chaptersUrl}/${chapterId}/${lessonId}`
-  const ComponentType = isUnlocked ? Link : 'p'
+  const lessonMetaCompleted = lessons[chapterId][lessonId].metadata
+  const { isUnlocked } = useLessonStatus(progress, lessonMetaUnlocked.key)
+  const { isCompleted } = useLessonStatus(progress, lessonMetaCompleted.key)
+
+  const lessonHref =
+    lessonId === chapters[chapterId].metadata['challenges'][0]
+      ? 'intro-1'
+      : lessonId
+  const href = `${routes.chaptersUrl}/${chapterId}/${lessonHref}`
+  const ComponentType = isUnlocked ? Link : 'div'
 
   return (
     <ComponentType
@@ -41,10 +49,16 @@ export default function ChallengeItem({
       <span className="pr-1 opacity-50">{position + '. '}</span>
       {t(title)}
       {!isUnlocked && (
-        <LockIcon className="absolute right-[15px] top-1/2 -translate-y-1/2 opacity-25" />
+        <Icon
+          icon="lock"
+          className="absolute right-[15px] top-1/2 -translate-y-1/2 opacity-25"
+        />
       )}
       {isCompleted && (
-        <CheckIcon className="absolute right-[15px] top-1/2 h-[20px] w-[20px] -translate-y-1/2" />
+        <Icon
+          icon="check"
+          className="absolute right-[15px] top-1/2 h-[20px] w-[20px] -translate-y-1/2"
+        />
       )}
     </ComponentType>
   )

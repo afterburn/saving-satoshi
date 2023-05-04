@@ -1,6 +1,6 @@
 'use client'
 
-import { useLocalizedRoutes, useTranslations } from 'hooks'
+import { useTranslations } from 'hooks'
 import { LessonInfo, Title, Text, InputChallenge } from 'ui'
 import { Button } from 'shared'
 
@@ -9,8 +9,7 @@ export const metadata = {
   key: 'CH1GEN2',
 }
 
-export default function Genesis3({ lang }) {
-  const routes = useLocalizedRoutes()
+export default function Genesis2({ lang }) {
   const t = useTranslations(lang)
 
   return (
