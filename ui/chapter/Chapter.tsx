@@ -31,6 +31,20 @@ const tabData = [
   },
 ]
 
+const numbers = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+]
+
 export default function Chapter({ children, metadata, lang }) {
   const { progress } = useProgressContext()
   const { isUnlocked } = useLessonStatus(
@@ -45,6 +59,9 @@ export default function Chapter({ children, metadata, lang }) {
   const routes = useLocalizedRoutes()
   const t = useTranslations(lang)
   const chapter = chapters[metadata.slug]
+  const chapterWord = chapter.metadata.slug
+    .split('-')[1]
+    .replace(/\d+/g, (m) => numbers[m])
   const position = metadata.position + 1
   const isEven = position % 2 == 0
 
@@ -98,8 +115,7 @@ export default function Chapter({ children, metadata, lang }) {
                             icon="lock"
                             className="my-auto mr-2 justify-center"
                           />
-                          {t('chapter.chapter_locked_one')} {position - 1}{' '}
-                          {t('chapter.chapter_locked_two')}
+                          {t(`chapter_${chapterWord}.locked`)}
                         </div>
                       )) ||
                       (chapter.metadata.lessons.length === 0 && null)}
@@ -122,19 +138,19 @@ export default function Chapter({ children, metadata, lang }) {
                       >
                         {(chapter.metadata.lessons.length > 0 &&
                           display &&
-                          progress &&
-                          progress.substring(3, 7) === 'INT1' &&
+                          ((progress &&
+                            progress.substring(
+                              progress.length - 4,
+                              progress.length
+                            ) === 'INT1') ||
+                            !progress) &&
                           `${t('shared.start_chapter')} ${position}`) ||
-                          (chapter.metadata.lessons.length > 0 &&
-                            display &&
-                            !progress &&
-                            `${t('shared.start_chapter')} ${position}`) ||
                           (chapter.metadata.lessons.length > 0 &&
                             display &&
                             progress &&
                             keysMeta[progress].path.split('/')[2] !==
                               chapter.metadata.slug &&
-                            `${t('shared.start_chapter')} ${position}`) ||
+                            `Restart chapter ${position}`) ||
                           (chapter.metadata.lessons.length > 0 &&
                             display &&
                             progress &&
@@ -143,9 +159,7 @@ export default function Chapter({ children, metadata, lang }) {
                             `${t('shared.next')}`) ||
                           (chapter.metadata.lessons.length > 0 &&
                             !display &&
-                            `${t('chapter.chapter_locked_one')} ${
-                              position - 1
-                            } ${t('chapter.chapter_locked_two')}`) ||
+                            `${t(`chapter_${chapterWord}.locked`)}`) ||
                           (chapter.metadata.lessons.length === 0 &&
                             t('shared.coming_soon')) ||
                           t('shared.start_chapter')}

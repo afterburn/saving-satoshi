@@ -69,6 +69,7 @@ const translations = {
 
   ///CHAPTERS TITLE PAGE
   chapter_one: {
+    locked: 'Loading...',
     title: 'Secrets in plain sight',
     paragraph_one:
       'The year is 2139. The last bitcoin is two weeks from being mined. For months, a clock has ticked down in Satoshi Square. The world awaits the last block. Then, suddenly, the network grinds to a halt.',
@@ -202,6 +203,7 @@ const translations = {
   },
 
   chapter_two: {
+    locked: 'Complete chapter 1 to unlock.',
     title: 'The 51% attack',
     paragraph_one:
       'The network outage has to be related to the block subsidy. There’s no way this is a coincidence.',
@@ -312,6 +314,7 @@ const translations = {
   },
 
   chapter_three: {
+    locked: 'Complete chapter 2 to unlock.',
     title: 'Claiming your rewards',
     paragraph_one:
       'Phew, that was close. You are still shaking from your battle againstAmestris, yet relieved that a victory was possible.',
@@ -322,6 +325,7 @@ const translations = {
   },
 
   chapter_four: {
+    locked: 'Complete chapter 3 to unlock.',
     title: 'Will the real Satoshi please stand up?',
     paragraph_one:
       'A mysterious billionaire is claiming to be Satoshi Nakamoto. Why would Satoshi come forward after all this time? What are the chances Satoshi is even alive?',
@@ -330,26 +334,32 @@ const translations = {
   },
 
   chapter_five: {
+    locked: 'Complete chapter 4 to unlock.',
     title: 'The keyholder',
   },
 
   chapter_six: {
+    locked: 'Complete chapter 5 to unlock.',
     title: `Offense is the best defense`,
   },
 
   chapter_seven: {
+    locked: 'Complete chapter 6 to unlock.',
     title: `Twentyone`,
   },
 
   chapter_eight: {
+    locked: 'Complete chapter 7 to unlock.',
     title: 'A matter of sustainability',
   },
 
   chapter_nine: {
+    locked: 'Complete chapter 8 to unlock.',
     title: `Don't compute, verify.`,
   },
 
   chapter_ten: {
+    locked: 'Complete chapter 9 to unlock.',
     title: '10 billion connections',
   },
 
